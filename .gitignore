@@ -1,0 +1,49 @@
+# Databases & Data
+*.db
+*.sqlite
+*.sqlite3
+expenses.db
+
+# Node.js / React (Frontend)
+node_modules/
+dist/
+build/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (Backend)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+.venv/
+
+# PyInstaller / Nuitka Build Artifacts
+build/
+dist/
+*.build/
+*.onefile-build/
+*.spec
+FinanceControl.exe
+FinanceControl.zip
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
