@@ -40,7 +40,4 @@ To build the application into a standalone distribution that you can share:
 
 ## Security & Integrity (Checksums)
 
-Because the compiled application contains an embedded server, some highly sensitive antivirus scanners might flag it. To prove the integrity of the build, we distribute it as a zipped folder (avoiding self-extraction false positives).
-
-To verify your download, you can check the SHA-256 hash of `FinanceControl.zip` against the hash documented in `CHECKSUM.md`. 
-You can also upload the zip file (or the `.exe` inside it) to [VirusTotal](https://www.virustotal.com/) to see the clean scan results.
+To verify the integrity of your download, you can check the SHA-256 hash of `FinanceControl.zip` (or `FinanceControl.exe`) against the hashes documented in `CHECKSUM.md`. This ensures your file has not been corrupted or tampered with.

@@ -68,7 +68,6 @@ def main():
     print("=========================================")
     print(f"Your standalone application is ready at:\n--> {zip_target}.zip")
     print("\nExtract the ZIP somewhere and double-click FinanceControl.exe to run.")
-    print("This method prevents the False Positive VirusTotal flags!")
     print("=========================================")
 
 if __name__ == "__main__":
