@@ -8,8 +8,8 @@ Hieronder vind je de SHA-256 checksums van de officiële distributiebestanden, z
 
 | Bestand | Type | SHA-256 Checksum |
 |---|---|---|
-| `FinanceControl.zip` | Folder release | `DFA60E14D9A3F2685BB2CF4B84E698F5A0F9CA7767C509BF00FBE83C6484BCCB` |
-| `FinanceControl.exe` | Single-file release | `397A760431D179C5C3B2A549E26031440272D9D31DE322C11F578E640CC50FAA` |
+| `FinanceControl.zip` | Folder release | `23BA7A2A0377A38EFFD76EC312DEA2E90B5D97168C16D373676E711ED6DFC25B` |
+| `FinanceControl.exe` | Single-file release | `AF30E0C607204CBEBF39B9B6B77814B419232FDBBA195CF5C5592155E44EAD01` |
 
 ## Hoe te verifiëren (Windows PowerShell)
 
