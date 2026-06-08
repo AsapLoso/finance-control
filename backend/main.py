@@ -59,6 +59,16 @@ def delete_income(income_id: int):
     database.delete_income(income_id)
     return {"message": "Income deleted"}
 
+import time
+
+LAST_HEARTBEAT = time.time()
+
+@app.post("/heartbeat")
+def heartbeat_endpoint():
+    global LAST_HEARTBEAT
+    LAST_HEARTBEAT = time.time()
+    return {"status": "ok"}
+
 import os
 import sys
 
@@ -127,6 +137,20 @@ if __name__ == '__main__':
         webbrowser.open(f"http://127.0.0.1:{port}")
         
     threading.Thread(target=open_browser, daemon=True).start()
+    
+    # Start the heartbeat monitor thread to auto-terminate when browser closes
+    def monitor_heartbeat():
+        # Wait 15 seconds initially to allow browser to open and start pings
+        time.sleep(15)
+        while True:
+            time.sleep(2)
+            if time.time() - LAST_HEARTBEAT > 10:
+                print("No heartbeat detected for 10 seconds. Shutting down backend...")
+                # Use os._exit to immediately kill the process and free ports/db locks
+                import os
+                os._exit(0)
+
+    threading.Thread(target=monitor_heartbeat, daemon=True).start()
     
     print(f"Starting Finance.Control on http://127.0.0.1:{port}")
     # Disable reload since reload is not supported in compiled state

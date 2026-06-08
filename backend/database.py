@@ -17,6 +17,74 @@ else:
 DB_NAME = os.path.join(BASE_DIR, 'expenses.db')
 print(f"DEBUG: Database path is {DB_NAME}")
 
+def initialize_database():
+    """Initializes the database schema and seeds sample data if empty."""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    # Create tables if they do not exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS fixed_expenses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            subcategory TEXT,
+            amount DECIMAL(10, 2) NOT NULL,
+            frequency TEXT CHECK(frequency IN ('Monthly', 'Yearly')) NOT NULL,
+            description TEXT
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS incomes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            amount DECIMAL(10, 2) NOT NULL,
+            category TEXT NOT NULL
+        )
+    ''')
+    
+    # Check if empty to seed sample data
+    cursor.execute("SELECT COUNT(*) FROM fixed_expenses")
+    expense_count = cursor.fetchone()[0]
+    cursor.execute("SELECT COUNT(*) FROM incomes")
+    income_count = cursor.fetchone()[0]
+    
+    if expense_count == 0 and income_count == 0:
+        print("Database is empty. Seeding sample data...")
+        # Insert sample expenses
+        expenses = [
+            ('Rent', 'Housing', 'Rent', 1500.00, 'Monthly', 'Monthly apartment rent'),
+            ('Energy', 'Housing', 'Energy', 180.00, 'Monthly', 'Gas and Electricity'),
+            ('Water', 'Housing', 'Water', 30.00, 'Monthly', 'Water bill'),
+            ('Taxes', 'Housing', 'Taxes', 460.00, 'Yearly', 'Municipal taxes'),
+            ('Health Insurance', 'Insurance', 'Health/Zorg', 145.00, 'Monthly', 'Basic health insurance'),
+            ('Contents Insurance', 'Insurance', 'Contents/Inboedel', 120.00, 'Yearly', 'Home contents insurance'),
+            ('Liability Insurance', 'Insurance', 'Liability', 45.00, 'Yearly', 'Personal liability insurance')
+        ]
+        cursor.executemany('''
+            INSERT INTO fixed_expenses (name, category, subcategory, amount, frequency, description)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', expenses)
+        
+        # Insert sample incomes
+        incomes = [
+            ('Salaris Werkgever', 2800.00, 'Loon'),
+            ('Zorgtoeslag', 123.00, 'Toeslagen'),
+            ('Voorlopige Aanslag (HRA)', 150.00, 'Teruggaven')
+        ]
+        cursor.executemany('''
+            INSERT INTO incomes (name, amount, category)
+            VALUES (?, ?, ?)
+        ''', incomes)
+        
+    conn.commit()
+    conn.close()
+
+# Auto-initialize database on import
+try:
+    initialize_database()
+except Exception as e:
+    print(f"ERROR: Failed to initialize database: {e}")
 
 def get_db_connection():
     conn = sqlite3.connect(DB_NAME)

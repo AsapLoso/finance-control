@@ -74,6 +74,23 @@ const FinanceDashboard = () => {
         fetchData();
     }, []);
 
+    // Heartbeat to keep backend alive
+    useEffect(() => {
+        const sendHeartbeat = () => {
+            fetch(`${API_URL}/heartbeat`, { method: 'POST' }).catch((err) => {
+                console.warn("Failed to send heartbeat:", err);
+            });
+        };
+
+        // Send immediately
+        sendHeartbeat();
+
+        // Send every 3 seconds
+        const interval = setInterval(sendHeartbeat, 3000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     // --- BEREKENINGEN ---
 
     // Totalen
