@@ -1,7 +1,26 @@
+import sys
+
+# In windowed mode (no console), sys.stdout and sys.stderr are None.
+# We redirect them to a dummy writer to prevent crashes in libraries (like uvicorn logging)
+# that try to query or write to stdout/stderr.
+class NullWriter:
+    def write(self, *args, **kwargs):
+        pass
+    def flush(self, *args, **kwargs):
+        pass
+    def isatty(self):
+        return False
+
+if sys.stdout is None:
+    sys.stdout = NullWriter()
+if sys.stderr is None:
+    sys.stderr = NullWriter()
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 import database, models
+
 
 app = FastAPI(title="Fixed Expenses API")
 

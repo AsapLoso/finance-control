@@ -63,11 +63,73 @@ def main():
     print(f"Creating {zip_target}.zip from {dist_folder}...")
     shutil.make_archive(zip_target, "zip", dist_folder)
 
+    # Step 5: Package application using PyInstaller in Onefile mode
+    print("\n--- Step 5: Compiling Python Backend (Onefile Mode) ---")
+    pyinstaller_onefile_cmd = (
+        f'"{sys.executable}" -m PyInstaller --onefile --clean --windowed '
+        '--name FinanceControl '
+        '--add-data "..\\frontend\\dist;frontend\\dist" '
+        'main.py'
+    )
+    run_command(pyinstaller_onefile_cmd, cwd=backend_dir, error_msg="PyInstaller onefile packaging failed")
+
+    # Copy the onefile executable to root
+    onefile_source = os.path.join(backend_dir, "dist", "FinanceControl.exe")
+    onefile_target = os.path.join(root_dir, "FinanceControl.exe")
+    print(f"Copying {onefile_source} to {onefile_target}...")
+    if os.path.exists(onefile_target):
+        try:
+            os.remove(onefile_target)
+        except OSError:
+            import stat
+            os.chmod(onefile_target, stat.S_IWRITE)
+            os.remove(onefile_target)
+    shutil.copy2(onefile_source, onefile_target)
+
+    # Step 6: Clean up build clutter
+    print("\n--- Step 6: Cleaning up build clutter ---")
+    
+    def remove_readonly(func, path, excinfo):
+        import stat
+        try:
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
+        except Exception:
+            pass
+
+    cleanup_paths = [
+        os.path.join(backend_dir, "build"),
+        os.path.join(backend_dir, "dist"),
+        os.path.join(backend_dir, "FinanceControl.spec"),
+        os.path.join(root_dir, "build"),
+        os.path.join(root_dir, "dist"),
+        os.path.join(root_dir, "_internal"),
+        os.path.join(root_dir, "FinanceControl.spec"),
+    ]
+    
+    for path in cleanup_paths:
+        if os.path.exists(path):
+            print(f"Removing temporary build path: {path}")
+            try:
+                if os.path.isdir(path):
+                    shutil.rmtree(path, onerror=remove_readonly)
+                else:
+                    try:
+                        os.remove(path)
+                    except OSError:
+                        import stat
+                        os.chmod(path, stat.S_IWRITE)
+                        os.remove(path)
+            except Exception as e:
+                print(f"Failed to remove {path}: {e}")
+
     print("\n=========================================")
-    print("          BUILD SUCCESSFUL!              ")
+    print("          BUILDS SUCCESSFUL!             ")
     print("=========================================")
-    print(f"Your standalone application is ready at:\n--> {zip_target}.zip")
-    print("\nExtract the ZIP somewhere and double-click FinanceControl.exe to run.")
+    print(f"Your packages are ready:")
+    print(f"1. Standalone ZIP: --> {zip_target}.zip")
+    print(f"2. Standalone EXE: --> {onefile_target}")
+    print("\nAll compilation clutter has been cleaned up automatically.")
     print("=========================================")
 
 if __name__ == "__main__":
