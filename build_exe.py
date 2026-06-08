@@ -28,14 +28,13 @@ def main():
 
     # Step 2: Build the React frontend
     print("\n--- Step 2: Building React Frontend ---")
-    dist_dir = os.path.join(frontend_dir, "dist")
-    if not os.path.exists(dist_dir) or not os.path.exists(os.path.join(dist_dir, "index.html")):
+    node_modules_dir = os.path.join(frontend_dir, "node_modules")
+    if not os.path.exists(node_modules_dir):
         print("Installing Node modules...")
         run_command("npm install", cwd=frontend_dir, error_msg="npm install failed")
-        print("Building production React assets...")
-        run_command("npm run build", cwd=frontend_dir, error_msg="npm run build failed")
-    else:
-        print("Frontend already built, skipping...")
+        
+    print("Building production React assets...")
+    run_command("npm run build", cwd=frontend_dir, error_msg="npm run build failed")
 
     # Step 3: Package application using PyInstaller in Directory mode
     print("\n--- Step 3: Compiling Python Backend (Directory Mode) ---")
